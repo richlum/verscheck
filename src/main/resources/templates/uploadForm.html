@@ -11,11 +11,16 @@
 				<tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
 				<tr><td></td><td><input type="submit" value="Upload file" /></td></tr>
 				<tr><td></td><td><input type="submit" value="Upload2" /></td></tr>
-				<tr><td></td><td><button type="submit" name="process" value="Process" formaction="/process" /></td></tr>
 			</table>
 		</form>
 	</div>
-
+	<div>
+	
+	</div>
+	<table>
+		<tr><td></td><td><input type="button" onclick="location.href='/process';" value="Process"/></td></tr>
+		<tr><td></td><td><a href="/process" />Process</td></tr>
+	</table>
 	<div>
 		<ul>
 			<li th:each="file : ${files}">
@@ -30,8 +35,29 @@
 				<tr>
 					<td th:each="header : ${headers}" th:text="${header}">header</td>		
 				</tr>
-				<tr>
-					<td th:each="row : ${rows}" th:text="${row.col}">header</td>
+				<tr  th:each="row : ${rows}"  >
+					<td th:text="${row.path}"></td>
+					<td th:text="${row.filename}"></td>
+			<!-- 		<td th:text="${row.rowkey}"></td>
+					<td th:text="${row.columns}"></td>
+					<td th:text="${row.columns.keySet()}"></td>
+					<td th:text="${row.columns.values()}"></td>
+			-->		<td th:each="mapval : ${row.columns.values()}" th:text="${mapval}">mapkey2</td>
+					<td th:each="keyval : ${row.columns.keySet()}" th:text="${keyval}">mapkey2</td>
+					<td th:each="keyval : ${row.columns.keySet()}" th:text="${row.columns.get(keyval)}">mapkey2</td>
+										
+					<!-- 
+					<td th:each="mapkey : ${row.columns.keySet()}"  th:text=${mapkey}>mapkey</td>
+					<td th:text="${entry.value}"></td>
+					<td th:text="${stuff.key}"></td>
+					<td th:name="${row.columns[${thekeys}]}"></td>
+					<td th:name="${thekeys.toArray[0]}"></td>
+					<td th:text="${row.columns[${thekeys}]}"></td>
+					<td th:text="${$row.columns[${entry}]}"></td>
+					<td th:each="header : ${row.columns}" th:text="${header.key}">headerkey</td>
+					<td th:text="${header.value}">headervalue</td>
+					-->
+					
 				</tr>
 			</table>
 		</ul>
