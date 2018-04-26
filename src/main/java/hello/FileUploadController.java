@@ -55,10 +55,7 @@ public class FileUploadController {
                 path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
                         "serveFile", path.getFileName().toString()).build().toString())
                 .collect(Collectors.toList()));
-        //model.addAttribute("headers", new String[]{"one","two","three"});
-        model.addAttribute("headers", "FILE,".concat(searchdirs).split(","));
-//        List<row> rows = new ArrayList<row>();
-//        model.addAttribute("rows",rows);
+        model.addAttribute("headers", "FILE,Req Vers, ".concat(searchdirs).split(","));
         
         return "uploadForm";
     }
@@ -67,16 +64,21 @@ public class FileUploadController {
     @PostMapping("/process")
     public String doprocess(Model model) throws IOException {
     	System.out.println("entered process");
+    	
+    	/* todo: replace this with an input method to provide data */
     	String listOfFiles = "aa,bb,cc";
+    	String listOfVers  = "00.00.01,00.02.00,03.00.00";
+    		
     	String[] dirnames = searchdirs.split(",");
     	dirnamelist = Arrays.asList(dirnames);
+    	List<String> verslist = Arrays.asList(listOfVers.split(","));
     	List<row> myrows = new ArrayList<row>();
     	List<String> myheaders = new ArrayList<String>();
-
     	
     	System.out.println("entered making rows");
+    	int i = 0;
     	for(String fn: listOfFiles.split(",")) {
-   			row arow = new row(fn);
+   			row arow = new row(fn,verslist.get(i++));
     		for ( String dir :  dirnamelist) {
     			arow.getCollist().add(dirnamelist.indexOf(dir),"none");
     		}
@@ -86,36 +88,17 @@ public class FileUploadController {
     	System.out.println("made rows " + myrows.size());
     	populateRows(myrows);
     	populateHeaders(myheaders, myrows);
-//		myrows = myrows.stream().map(arow -> {
-//			try {
-//				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(arow.getRowkey())));
-//				String line;
-//				while((line=br.readLine())!=null) {
-//					if (line.contains("RtbVersion")) {
-//						br.close();
-//						System.out.println("line" + line);
-//						
-//						arow.getColumns().put(arow.getRowkey(), line);
-//						return arow;
-//					}
-//				}
-//				br.close();
-//				return arow;
-//			}catch(Exception e) {
-//				System.err.println("br expection" + e.getMessage());
-//			} 
-//			return arow;
-//		}).collect(Collectors.toList());
-	
-		System.out.println("process add addributes");
+		
+    	System.out.println("process add addributes");
 		model.addAttribute("rows", myrows);
 		model.addAttribute("headers",myheaders);
     	return "uploadForm"; // name of the html template we are updating.
     }
     private void populateHeaders(List<String> myheaders, List<row> myrows) {
 		// TODO Auto-generated method stub
-    	myheaders.add(" ");
+//    	myheaders.add(" ");
     	myheaders.add("File");
+    	myheaders.add("Required Version");
     	for (String dirname: dirnamelist) {
     		myheaders.add(dirname);
     	}
@@ -150,12 +133,7 @@ public class FileUploadController {
     
     public void populateRows(List<row> myrows) {
     	myrows.stream().map(arow -> {
-//    		System.out.println("searchdirs" + searchdirs);
     		String[] columns = searchdirs.split(",");
-//    		System.out.println(" columns " + columns);
-//    		System.out.println(" columns size  " + columns.length);
-//    		System.out.println(" columns 0  " + columns[0]);
-//    		System.out.println(" columns 1  " + columns[1]);
     		
     		String fullpath;
 			try {
@@ -167,22 +145,16 @@ public class FileUploadController {
 					String line;
 					while((line=br.readLine())!=null) {
 						if (line.contains(keystring)) {
-//							br.close();
 							line = line.substring(keystring.length());
 							System.out.println("line " + line + " column: " + column + " file: " + arow.getFilename());
-							//arow.getColumns().put(arow.getFilename(),line);
-//							arow.getCollist().add(dirnamelist.indexOf(column), line);
 							arow.getCollist().set(dirnamelist.indexOf(column),line);
-//							return arow;
 							break;
 						}
 					}
 					br.close();
-//					return arow;
 				}
 			}catch(Exception e) {
 				System.err.println("br expection" + e.getMessage());
-//				return arow;
 			} 
 			return arow;
 		}).collect(Collectors.toList());

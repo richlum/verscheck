@@ -9,6 +9,8 @@ public class row {
 	
 	private String path;
 	private String filename;
+	private String version;
+
 	private Map<String,String> columns;
 	private String rowkey;
 	private List<String> collist;
@@ -21,9 +23,10 @@ public class row {
 		this.collist = collist;
 	}
 
-	public row(String filename) {
+	public row(String filename, String versionrequired) {
 		super();
 		this.filename = filename;
+		this.version = versionrequired;
 		setRowkey();
 		initColumns();
 	}
@@ -65,5 +68,12 @@ public class row {
 	}
 	public void setColumns(Map<String,String> columns) {
 		this.columns = columns;
+	}
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 }
