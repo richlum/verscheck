@@ -1,6 +1,8 @@
 package hello;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class row {
@@ -9,20 +11,27 @@ public class row {
 	private String filename;
 	private Map<String,String> columns;
 	private String rowkey;
+	private List<String> collist;
 	
-	
-	public row(String path, String filename) {
+	public List<String> getCollist() {
+		return collist;
+	}
+
+	public void setCollist(List<String> collist) {
+		this.collist = collist;
+	}
+
+	public row(String filename) {
 		super();
-		setPath(path);
 		this.filename = filename;
 		setRowkey();
 		initColumns();
-		
 	}
 
 	private void initColumns() {
 		// TODO Auto-generated method stub
 		this.columns = new HashMap<String,String>();
+		this.collist = new ArrayList<String>();
 	}
 
 	public String getPath() {
@@ -49,7 +58,7 @@ public class row {
 		return rowkey;
 	}
 	public void setRowkey() {
-		this.rowkey = this.path.concat(this.filename);
+		this.rowkey = this.filename;
 	}
 	public Map<String,String> getColumns() {
 		return columns;

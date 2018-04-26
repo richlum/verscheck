@@ -38,14 +38,15 @@
 				<tr  th:each="row : ${rows}"  >
 					<td th:text="${row.path}"></td>
 					<td th:text="${row.filename}"></td>
+					<td th:each="col : ${row.collist}" th:text="${col}">none</td>
 			<!-- 		<td th:text="${row.rowkey}"></td>
 					<td th:text="${row.columns}"></td>
 					<td th:text="${row.columns.keySet()}"></td>
 					<td th:text="${row.columns.values()}"></td>
-			-->		<td th:each="mapval : ${row.columns.values()}" th:text="${mapval}">mapkey2</td>
+				<td th:each="mapval : ${row.columns.values()}" th:text="${mapval}">mapkey2</td>
 					<td th:each="keyval : ${row.columns.keySet()}" th:text="${keyval}">mapkey2</td>
 					<td th:each="keyval : ${row.columns.keySet()}" th:text="${row.columns.get(keyval)}">mapkey2</td>
-										
+				-->							
 					<!-- 
 					<td th:each="mapkey : ${row.columns.keySet()}"  th:text=${mapkey}>mapkey</td>
 					<td th:text="${entry.value}"></td>

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ public class FileUploadController {
 
     private final StorageService storageService;
     private final String keystring = "RtbVersion=";
+    private List<String> dirnamelist;
     
     private String searchdirs;
     @Value("${searchdirectories}")
@@ -67,17 +69,23 @@ public class FileUploadController {
     	System.out.println("entered process");
     	String listOfFiles = "aa,bb,cc";
     	String[] dirnames = searchdirs.split(",");
+    	dirnamelist = Arrays.asList(dirnames);
     	List<row> myrows = new ArrayList<row>();
+    	List<String> myheaders = new ArrayList<String>();
+
     	
     	System.out.println("entered making rows");
-    	for (String dirname :  dirnames) {
-    		for(String fn: listOfFiles.split(",")) {
-//    			String fullpath = dirname.concat(fn);
-    			myrows.add(new row(dirname,fn));
+    	for(String fn: listOfFiles.split(",")) {
+   			row arow = new row(fn);
+    		for ( String dir :  dirnamelist) {
+    			arow.getCollist().add(dirnamelist.indexOf(dir),"none");
     		}
+    		System.out.println(arow.getCollist().size() + " elements in row");
+   			myrows.add(arow);
     	}
     	System.out.println("made rows " + myrows.size());
     	populateRows(myrows);
+    	populateHeaders(myheaders, myrows);
 //		myrows = myrows.stream().map(arow -> {
 //			try {
 //				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(arow.getRowkey())));
@@ -101,9 +109,20 @@ public class FileUploadController {
 	
 		System.out.println("process add addributes");
 		model.addAttribute("rows", myrows);
+		model.addAttribute("headers",myheaders);
     	return "uploadForm"; // name of the html template we are updating.
     }
-    @GetMapping("/files/{filename:.+}")
+    private void populateHeaders(List<String> myheaders, List<row> myrows) {
+		// TODO Auto-generated method stub
+    	myheaders.add(" ");
+    	myheaders.add("File");
+    	for (String dirname: dirnamelist) {
+    		myheaders.add(dirname);
+    	}
+	}
+
+
+	@GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
 
@@ -151,7 +170,9 @@ public class FileUploadController {
 //							br.close();
 							line = line.substring(keystring.length());
 							System.out.println("line " + line + " column: " + column + " file: " + arow.getFilename());
-							arow.getColumns().put(arow.getFilename(),line);
+							//arow.getColumns().put(arow.getFilename(),line);
+//							arow.getCollist().add(dirnamelist.indexOf(column), line);
+							arow.getCollist().set(dirnamelist.indexOf(column),line);
 //							return arow;
 							break;
 						}
